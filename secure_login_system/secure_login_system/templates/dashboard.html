@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Secure Login System{% endblock %}
+{% block content %}
+  <h2>Welcome, {{ user['username'] }} 👋</h2>
+
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="label">Username</div>
+      <div class="value">{{ user['username'] }}</div>
+    </div>
+    <div class="info-item">
+      <div class="label">Email</div>
+      <div class="value">{{ user['email'] }}</div>
+    </div>
+    <div class="info-item">
+      <div class="label">Account created</div>
+      <div class="value">{{ user['created_at'][:10] }}</div>
+    </div>
+    <div class="info-item">
+      <div class="label">Two-Factor Auth</div>
+      <div class="value">
+        {% if user['totp_enabled'] %}
+          <span class="badge on">Enabled</span>
+        {% else %}
+          <span class="badge off">Disabled</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    {% if user['totp_enabled'] %}
+      <form method="POST" action="{{ url_for('disable_2fa') }}" onsubmit="return confirm('Disable two-factor authentication?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="secondary-btn">Disable 2FA</button>
+      </form>
+    {% else %}
+      <a href="{{ url_for('setup_2fa') }}" class="primary-btn">Enable 2FA</a>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button type="submit" class="secondary-btn">Log Out</button>
+    </form>
+  </div>
+{% endblock %}

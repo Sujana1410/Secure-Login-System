@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Set Up 2FA — Secure Login System{% endblock %}
+{% block content %}
+  <h2>Set Up Two-Factor Authentication</h2>
+  <p class="muted">
+    Scan the setup key below in an authenticator app (Google Authenticator,
+    Authy, Microsoft Authenticator, etc.) using "Enter code manually",
+    then confirm with the 6-digit code it generates.
+  </p>
+
+  <div class="secret-box">
+    <div class="secret-label">Manual entry key</div>
+    <div class="secret-value" id="secretValue">{{ secret }}</div>
+    <button type="button" class="secondary-btn" id="copySecretBtn">Copy</button>
+  </div>
+
+  <div class="uri-box">
+    <div class="secret-label">Setup URI (for apps that accept a link/QR text)</div>
+    <div class="uri-value">{{ uri }}</div>
+  </div>
+
+  <form method="POST" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+    <div class="field">
+      <label for="code">Enter the 6-digit code to confirm</label>
+      <input type="text" id="code" name="code" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" autofocus />
+    </div>
+
+    <button type="submit" class="primary-btn">Enable 2FA</button>
+  </form>
+
+  <p class="link-row"><a href="{{ url_for('dashboard') }}">Cancel and go back</a></p>
+
+  <script>
+    document.getElementById("copySecretBtn").addEventListener("click", () => {
+      navigator.clipboard.writeText(document.getElementById("secretValue").textContent.trim());
+    });
+  </script>
+{% endblock %}

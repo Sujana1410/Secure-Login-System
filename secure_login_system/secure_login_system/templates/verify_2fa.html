@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Verify 2FA — Secure Login System{% endblock %}
+{% block content %}
+  <h2>Two-Factor Verification</h2>
+  <p class="muted">Enter the 6-digit code from your authenticator app.</p>
+  <form method="POST" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+    <div class="field">
+      <label for="code">Authentication Code</label>
+      <input type="text" id="code" name="code" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" autofocus />
+    </div>
+
+    <button type="submit" class="primary-btn">Verify</button>
+  </form>
+{% endblock %}
